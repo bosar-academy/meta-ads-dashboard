@@ -1,0 +1,114 @@
+# Meta Ads Campaign Plan — {CAMPAIGN_NAME}
+
+> Replace this template with YOUR campaign brief. The dashboard reads `public/plan.md` (gitignored — created by you from this template OR from `/ad-strategy` output).
+>
+> During the install prompt, the onboarding wizard offers to:
+>   (a) paste your `/ad-strategy` output here, OR
+>   (b) walk you through filling this template by hand, OR
+>   (c) skip and use a generic placeholder so the dashboard runs (you fill later).
+
+## Context
+
+[1-3 sentences: what campaign is this, who's the target, what's the offer, what's the LP, what's the desired action]
+
+**Budget:** ${BUDGET_MONTHLY}/month base. Optional ${UNLOCK_BUDGET} unlock at week 2 if metrics on track.
+
+**What's in place:**
+- Pixel `{PIXEL_ID}` + CAPI (if applicable)
+- Optimization target: `{CUSTOM_CONVERSION_NAME}` custom conversion `{CUSTOM_CONVERSION_ID}`
+- Existing audiences (EXCLUDED from cold): list any 30/60/90-day audiences
+- N filmed video ads + N static banners ready
+
+---
+
+## Campaign Structure
+
+```
+COLD CAMPAIGN — "{CAMPAIGN_NAME}"
+  Campaign ID: {META_CAMPAIGN_ID}
+  Objective: OUTCOME_LEADS (or _SALES / _TRAFFIC / etc.)
+  Optimization: OFFSITE_CONVERSIONS → custom_conversion_id {CUSTOM_CONVERSION_ID}
+  Bid strategy: LOWEST_COST_WITHOUT_CAP
+  Budget mode: ABO (or CBO)
+
+  └── Ad Set — "{AD_SET_NAME}"
+        ID: {AD_SET_ID}
+        Daily budget: ${DAILY_BUDGET}/day ({DAILY_BUDGET_CENTS} cents)
+        Status: PAUSED until reviewed
+        N ads (mix or all-format)
+```
+
+### Targeting
+
+```json
+{
+  "geo_locations": {"countries": ["{COUNTRY}"]},
+  "age_min": {AGE_MIN},
+  "age_max": {AGE_MAX},
+  "publisher_platforms": ["facebook", "instagram"],
+  "facebook_positions": ["feed", "facebook_reels", "story"],
+  "instagram_positions": ["stream", "reels", "story"],
+  "device_platforms": ["mobile"],
+  "interests": [
+    {"id": "{INTEREST_ID_1}", "name": "{INTEREST_NAME_1}"},
+    {"id": "{INTEREST_ID_2}", "name": "{INTEREST_NAME_2}"}
+  ],
+  "behaviors": [],
+  "excluded_custom_audiences": []
+}
+```
+
+---
+
+## Targets (KPIs the dashboard evaluates against)
+
+| Metric | Target | Acceptable | Kill threshold |
+|---|---|---|---|
+| CPR (cost per registration / lead) | ${CPR_TARGET} | ${CPR_ACCEPTABLE} | > ${CPR_KILL} |
+| CPM | < ${CPM_TARGET} | < ${CPM_ACCEPTABLE} | > ${CPM_KILL} |
+| CTR (link) | > {CTR_TARGET}% | > {CTR_ACCEPTABLE}% | < {CTR_KILL}% |
+| Frequency | < 1.5 | < 2.0 | > 2.5 |
+| Events/wk (learning phase) | > 50 | > 30 | < 20 |
+
+---
+
+## Decision gates (cumulative spend triggers)
+
+- **Day 3** (~${SPEND_DAY3} spent) — first read CPM/CTR. Spot creative bombs early.
+- **Day 7** (~${SPEND_DAY7} spent) — first CPR ballpark. Kill creatives clearly above ceiling.
+- **Day 14** (~${SPEND_DAY14} spent) — unlock decision. If CPR on target + CAC trending well, unlock budget.
+- **Day 21** (~${SPEND_DAY21} spent) — LAL trigger. Build 1% lookalike if registrant audience > 50 seed.
+- **Day 28** (~${SPEND_DAY28} spent) — month 2 decision. Scale, pivot, or kill.
+
+---
+
+## Reference IDs
+
+| Thing | ID |
+|---|---|
+| Ad account | `{META_AD_ACCOUNT_ID}` |
+| Pixel | `{PIXEL_ID}` |
+| Campaign | `{META_CAMPAIGN_ID}` |
+| Ad Set | `{AD_SET_ID}` |
+| Custom conversion (`{CUSTOM_CONVERSION_NAME}`) | `{CUSTOM_CONVERSION_ID}` |
+| Custom audience: Registrants 30d | `{REGISTRANTS_AUDIENCE_ID}` |
+| Custom audience: Viewed Offer 30d | `{OFFER_VIEWERS_AUDIENCE_ID}` |
+
+---
+
+## Creative inventory
+
+| Creative | Format | Angle | Status |
+|---|---|---|---|
+| [name] | static / video | [angle] | uploaded / in-review |
+
+---
+
+## Exit criteria
+
+The campaign ends (decision time) when ANY of:
+- [ ] 50 conversion events accumulated in 7 days (learning phase exit)
+- [ ] ${BUDGET_MONTHLY} spent (monthly cap)
+- [ ] 28 days elapsed
+- [ ] CPR below ${CPR_TARGET} sustained for 5 days (win — scale)
+- [ ] CPR above ${CPR_KILL} sustained for 5 days (kill — iterate)

@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// One row per cron sync run. Account-level rollup for the campaign window.
+model Snapshot {
+  id            String   @id @default(cuid())
+  capturedAt    DateTime @default(now())
+  // window covered by this snapshot (e.g. last_30d)
+  window        String
+  spendCents    Int
+  impressions   Int
+  clicks        Int
+  linkClicks    Int
+  registrations Int
+  callsBooked   Int
+  enrollments   Int
+  cprCents      Int?
+  ctrLink       Float?
+  cpmCents      Int?
+  frequency     Float?
+  raw           String   @default("{}")
+
+  @@index([capturedAt])
+}
+
+// One row per ad per day, captured at every cron run (upsert by date+adId).
+model AdDaily {
+  id            String  @id @default(cuid())
+  date          String
+  adId          String
+  adName        String
+  status        String
+  spendCents    Int
+  impressions   Int
+  linkClicks    Int
+  ctrLink       Float
+  registrations Int
+  cprCents      Int?
+  frequency     Float
+
+  @@unique([date, adId])
+  @@index([adId])
+}
+
+// v2 audit trail. v1 leaves this empty.
+model ActionLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  action    String
+  targetId  String
+  reasoning String
+  executor  String
+  result    String?
+}
